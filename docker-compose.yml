@@ -1,0 +1,56 @@
+#Configurantion for Docker Compose
+
+services:
+  app-punch:
+    container_name: app-punch
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    environment:
+      APP_URL: app-punch
+      APP_ENV: local
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: 'laravel'
+      DB_USERNAME: 'laravel'
+      DB_PASSWORD: "nlH+XZO#w#"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - app-punch
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "2a[r{T+#w#"
+      MYSQL_USER: 'laravel'
+      MYSQL_DATABASE: 'laravel'
+      MYSQL_PASSWORD: "nlH+XZO#w#"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-punch
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - app-punch
+
+networks:
+  app-punch:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
