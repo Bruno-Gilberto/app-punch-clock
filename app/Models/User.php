@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Admin;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,8 +19,17 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'admin_id',
         'name',
         'email',
+        'tax_id',
+        'birth_date',
+        'occupation',
+        'zipcode',
+        'street',
+        'state',
+        'city',
+        'neighborhood',
         'password',
     ];
 
@@ -44,5 +54,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
+    public function punchClockLogs()
+    {
+        return $this->hasMany(PunchClockLogs::class, 'user_id', 'id');
     }
 }

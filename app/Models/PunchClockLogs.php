@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use App\Models\User;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Admin extends Authenticatable
+class PunchClockLogs extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -19,6 +17,7 @@ class Admin extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'tax_id',
@@ -55,8 +54,8 @@ class Admin extends Authenticatable
         ];
     }
 
-    public function users()
+    public function logs()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
