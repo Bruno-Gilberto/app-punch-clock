@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["resources/js/components/*"],
+      "@/lib/*": ["resources/js/lib/*"],
+      "@/Pages/*": ["resources/js/Pages/*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "include": ["resources/js/**/*"],
+  "exclude": ["node_modules"]
+}
