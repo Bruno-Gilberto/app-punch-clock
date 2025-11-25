@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\Admin;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,6 +46,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var list<string>
+     */
+    protected $appends = ['age'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -56,12 +65,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function manager()
+    protected function age(): Attribute
     {
-        return $this->belongsTo(Admin::class);
+        return Attribute::make(
+            get: fn () => $this->birth_date ? Carbon::parse($this->birth_date)->age : null,
+        );
     }
 
-    public function punchClockLogs()
+    public function manager()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
+
+    public function punchLogs()
     {
         return $this->hasMany(PunchClockLogs::class, 'user_id', 'id');
     }

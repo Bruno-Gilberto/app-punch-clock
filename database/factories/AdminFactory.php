@@ -2,16 +2,17 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\\Models\\Admin>
  */
-class UserFactory extends Factory
+class AdminFactory extends Factory
 {
+
     /**
      * The current password being used by the factory.
      */
@@ -25,13 +26,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'admin_id' => 1,
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'tax_id' => str_pad(fake()->numberBetween(10000000000, 99999999999), 14, '0', STR_PAD_LEFT),
+            'tax_id' => '000.000.000-00',
             'birth_date' => Carbon::parse('1990-11-24'),
             'occupation' => 'Manager',
             'zipcode' => '00000000',
@@ -39,6 +35,10 @@ class UserFactory extends Factory
             'state' => 'Test State',
             'city' => 'Test City',
             'neighborhood' => 'Test Neighborhood',
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
         ];
     }
 
