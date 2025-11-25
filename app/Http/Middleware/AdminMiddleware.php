@@ -17,13 +17,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::guard('admin')->check()) {
+        if (Auth::guard('admin')->check()) {
            return $next($request);
-        }elseif (!Auth::check()) {
-            Auth::logout();
-            Session::flush('auth-error',__('Your Account Is Deactivated'));
         }
         
-        return $next($request);
+        return redirect()->route('admin.auth');
     }
 }

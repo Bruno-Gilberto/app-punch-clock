@@ -17,13 +17,10 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::guard('user')->check()) {
+        if (Auth::guard('user')->check()) {
            return $next($request);
-        }elseif (!Auth::check()) {
-            Auth::logout();
-            Session::flush('auth-error',__('Your Account Is Deactivated'));
         }
-        
-        return $next($request);
+
+        return redirect()->route('user.auth');
     }
 }
