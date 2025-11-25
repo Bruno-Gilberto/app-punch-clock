@@ -15,7 +15,7 @@ class InstallerController extends Controller
     public function index()
     {
         // 1. Verificar se a aplicação já está instalada (ex: checar APP_KEY)
-        if (env('APP_INSTALLED')) return redirect('/');        
+        if (env('APP_INSTALLED')) return redirect('/');
 
         // 2. Mostrar a view do instalador
         $phpversion = phpversion();

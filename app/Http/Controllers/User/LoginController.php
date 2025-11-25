@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         if (Auth::guard('user')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->route('user.dashboard');
         }
 
         return back()->withErrors([

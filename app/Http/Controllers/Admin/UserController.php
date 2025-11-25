@@ -19,13 +19,9 @@ class UserController extends Controller
         $query = User::with(['manager']);
         
         // Filtrar por data se fornecido
-        if ($request->has('start_date') && $request->start_date) {
-            $query->whereDate('created_at', '>=', $request->start_date);
-        }
+        if ($request->has('start_date') && $request->start_date) $query->whereDate('created_at', '>=', $request->start_date);
         
-        if ($request->has('end_date') && $request->end_date) {
-            $query->whereDate('created_at', '<=', $request->end_date);
-        }
+        if ($request->has('end_date') && $request->end_date) $query->whereDate('created_at', '<=', $request->end_date);
         
         // Busca por nome ou cargo
         if ($request->has('search') && $request->search) {
@@ -34,7 +30,7 @@ class UserController extends Controller
                   ->orWhere('occupation', 'like', "%{$search}%");
         }
         
-        $users = $query->orderBy('created_at', 'desc')->get()->map(function($user){
+        $users = $query->orderBy('name', 'ASC')->get()->map(function($user){
             $user->userAge = $user->age;
             $user->adminManager = $user->manager->name;
             return $user;
@@ -56,7 +52,7 @@ class UserController extends Controller
             'tax_id' => 'required|string|unique:users,tax_id|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
             'birth_date' => 'required|date|before:today',
             'occupation' => 'required|string|max:255',
-            'zipcode' => 'required|string|regex:/^\d{5}-\d{3}$/',
+            'zipcode' => 'required|numeric|digits_between:8,8',
             'street' => 'required|string|max:255',
             'state' => 'required|string|size:2|uppercase',
             'city' => 'required|string|max:255',
@@ -95,7 +91,7 @@ class UserController extends Controller
             'tax_id' => ['required', 'string', Rule::unique('users', 'tax_id')->ignore($user->id), 'regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/'],
             'birth_date' => 'required|date|before:today',
             'occupation' => 'required|string|max:255',
-            'zipcode' => 'required|string|regex:/^\d{5}-\d{3}$/',
+            'zipcode' => 'required|numeric|digits_between:8,8',
             'street' => 'required|string|max:255',
             'state' => 'required|string|size:2|uppercase',
             'city' => 'required|string|max:255',
@@ -111,7 +107,8 @@ class UserController extends Controller
         ]);
         
         // Apenas atualizar senha se fornecida
-        if (!empty($validated['password'])) $validated['password'] = bcrypt($validated['password']);
+        if (!empty($validated['password']) && $validated['password'] != '') $validated['password'] = bcrypt($validated['password']);
+        else unset($validated['password']);
 
         DB::beginTransaction();
 

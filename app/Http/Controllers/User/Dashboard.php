@@ -21,7 +21,7 @@ class Dashboard extends Controller
         $user = Auth::guard('user')->user();
 
         return Inertia::render('User/Profile', [
-            'user' => $user
+            'profile' => $user
         ]);
     }
 

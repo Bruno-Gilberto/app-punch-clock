@@ -23,7 +23,7 @@ class Dashboard extends Controller
         $user = Auth::guard('admin')->user();
 
         return Inertia::render('Admin/Profile', [
-            'user' => $user
+            'profile' => $user
         ]);
     }
 
@@ -78,8 +78,10 @@ class Dashboard extends Controller
 
         if (!Hash::check($validated['current_password'], $admin->password)) return redirect()->back()->withErrors(['current_password' => 'A senha atual está incorreta.']);
 
+        // dd($admin);
+
         $admin->update([
-            'password' =>bcrypt($validated['new_password']),
+            'password' => Hash::make($validated['new_password']),
         ]);
 
         return redirect()->back()->with('success', 'Senha alterada com sucesso.');
