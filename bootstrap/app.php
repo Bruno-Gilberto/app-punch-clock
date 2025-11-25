@@ -9,8 +9,11 @@ use Illuminate\Foundation\{
 use App\Http\Middleware\{
     UserMiddleware,
     AdminMiddleware,
-    HandleInertiaRequests
+    HandleInertiaRequests,
+    RedirectIfAuthenticatedMiddleware
 };
+
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'user' => UserMiddleware::class,
             'admin' => AdminMiddleware::class,
+            'guest' => RedirectIfAuthenticatedMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -23,12 +23,14 @@ class AppServiceProvider extends ServiceProvider
     {
         if (!app()->runningInConsole()) {
             Inertia::share([
-                'user' => fn () => Auth::user() ? [
-                    'id' => Auth::user()->id,
-                    'name' => Auth::user()->name,
-                    'email' =>  Auth::user()->email,
+                'user' => fn () => Auth::guard('user')->user() || Auth::guard('admin')->user() ? [
+                    'id' => Auth::guard('user')->user()->id ??  Auth::guard('admin')->user()->id,
+                    'name' => Auth::guard('user')->user()->name ?? Auth::guard('admin')->user()->name,
+                    'email' =>  Auth::guard('user')->user()->email ?? Auth::guard('admin')->user()->email,
+                    'role' => Auth::guard('admin')->check() ? 'admin' : 'user',
                 ] : null,
                 'appName' => config('app.name'),
+                'response' => fn () => session('response'),
                 'flash' => fn () => [
                     'success' => session('success'),
                     'error' => session('error'),
