@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('punch_clock_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->index();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamp('time');
             $table->string('type'); // e.g., 'in' or 'out' in future features possible expansion of types like 'break_start', 'break_end', etc.
             $table->timestamps();
