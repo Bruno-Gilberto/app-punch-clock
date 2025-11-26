@@ -14,34 +14,82 @@ class PunchClockLogSeeder extends Seeder
     {
         $users = User::all();
 
+        // Simular 5 semanas de registros de ponto
+        $daysToSimulate = 35; // 5 semanas
+
         foreach ($users as $user) {
-            // Entrada manhã
-            PunchClockLogs::create([
-                'user_id' => $user->id,
-                'time' => Carbon::now()->setTime(8, 30, 0),
-                'type' => 'in',
-            ]);
+            for ($i = 0; $i < $daysToSimulate; $i++) {
+                // Pular finais de semana (sÃ¡bado = 6, domingo = 0)
+                $date = Carbon::today()->subDays($i);
+                if ($date->dayOfWeek === 0 || $date->dayOfWeek === 6) continue;
+                
+                // Entrada da manhÃ£ (8:00 - 8:45)
+                PunchClockLogs::create([
+                    'user_id' => $user->id,
+                    'time' => $date->clone()->setTime(
+                        8,
+                        rand(0, 45),
+                        rand(0, 59)
+                    ),
+                    'type' => 'in',
+                ]);
 
-            // Saída almoço
-            PunchClockLogs::create([
-                'user_id' => $user->id,
-                'time' => Carbon::now()->setTime(12, 0, 0),
-                'type' => 'out',
-            ]);
+                // SaÃ­da para almoÃ§o (12:00 - 12:45)
+                PunchClockLogs::create([
+                    'user_id' => $user->id,
+                    'time' => $date->clone()->setTime(
+                        12,
+                        rand(0, 45),
+                        rand(0, 59)
+                    ),
+                    'type' => 'out',
+                ]);
 
-            // Entrada depois do almoço
-            PunchClockLogs::create([
-                'user_id' => $user->id,
-                'time' => Carbon::now()->setTime(13, 0, 0),
-                'type' => 'in',
-            ]);
+                // Entrada depois do almoÃ§o (13:00 - 13:30)
+                PunchClockLogs::create([
+                    'user_id' => $user->id,
+                    'time' => $date->clone()->setTime(
+                        13,
+                        rand(0, 30),
+                        rand(0, 59)
+                    ),
+                    'type' => 'in',
+                ]);
 
-            // Saída final
-            PunchClockLogs::create([
-                'user_id' => $user->id,
-                'time' => Carbon::now()->setTime(17, 30, 0),
-                'type' => 'out',
-            ]);
+                // SaÃ­da final (17:00 - 18:00)
+                PunchClockLogs::create([
+                    'user_id' => $user->id,
+                    'time' => $date->clone()->setTime(
+                        rand(17, 18),
+                        rand(0, 59),
+                        rand(0, 59)
+                    ),
+                    'type' => 'out',
+                ]);
+
+                // Ocasionalmente adicionar alguns registros extras (horas extras)
+                if (rand(1, 100) > 80) { // 20% de chance
+                    PunchClockLogs::create([
+                        'user_id' => $user->id,
+                        'time' => $date->clone()->setTime(
+                            19,
+                            rand(0, 59),
+                            rand(0, 59)
+                        ),
+                        'type' => 'in',
+                    ]);
+
+                    PunchClockLogs::create([
+                        'user_id' => $user->id,
+                        'time' => $date->clone()->setTime(
+                            rand(19, 22),
+                            rand(0, 59),
+                            rand(0, 59)
+                        ),
+                        'type' => 'out',
+                    ]);
+                }
+            }
         }
     }
 }
