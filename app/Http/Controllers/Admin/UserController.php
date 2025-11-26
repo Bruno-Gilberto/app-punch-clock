@@ -18,10 +18,7 @@ class UserController extends Controller
     {
         $query = User::with(['manager']);
         
-        // Filtrar por data se fornecido
-        if ($request->has('start_date') && $request->start_date) $query->whereDate('created_at', '>=', $request->start_date);
-        
-        if ($request->has('end_date') && $request->end_date) $query->whereDate('created_at', '<=', $request->end_date);
+        if ($request->has('page') && $request->page) $page = $request->page;
         
         // Busca por nome ou cargo
         if ($request->has('search') && $request->search) {
@@ -29,14 +26,24 @@ class UserController extends Controller
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('occupation', 'like', "%{$search}%");
         }
-        
-        $users = $query->orderBy('name', 'ASC')->get()->map(function($user){
-            $user->userAge = $user->age;
-            $user->adminManager = $user->manager->name;
+
+        $paginator = $query->orderBy('name', 'ASC')->paginate(20); 
+
+        $users = $paginator->getCollection()->map(function($user){
+            $user->userAge = $user->age; 
+            $user->adminManager = $user->manager->name ?? 'N/A'; 
             return $user;
         });
+
+        if($request->wantsJson()) return response()->json([
+            'currentPage' => $paginator->lastPage(),
+            'total_pages' => $paginator->currentPage(),
+            'users' => $users
+        ]);
         
         return Inertia::render('Admin/Users', [
+            'total_pages' => $paginator->lastPage(),
+            'current_page' => $paginator->currentPage(),
             'users' => $users,
         ]);
     }
