@@ -8,6 +8,5 @@
     },
     "jsx": "react-jsx"
   },
-  "include": ["resources/js/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["resources/js/**/*"]
 }
