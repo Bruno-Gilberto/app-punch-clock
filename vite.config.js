@@ -7,12 +7,17 @@ import path from 'path';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
         }),
         tailwindcss(),
         react(),
     ],
+    server: {
+        watch: {
+            usePolling: true
+        }
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './resources/js'),
