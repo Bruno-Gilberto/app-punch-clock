@@ -13,7 +13,7 @@ services:
       DB_PORT: 3306
       DB_DATABASE: 'laravel'
       DB_USERNAME: 'laravel'
-      DB_PASSWORD: "nlH+XZO#w#"
+      DB_PASSWORD: "2a[r{T+ewq"
     ports:
       - "8000:8000"
     volumes:
@@ -25,10 +25,10 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: "2a[r{T+#w#"
+      MYSQL_ROOT_PASSWORD: "2a[r{T+ewq"
       MYSQL_USER: 'laravel'
       MYSQL_DATABASE: 'laravel'
-      MYSQL_PASSWORD: "nlH+XZO#w#"
+      MYSQL_PASSWORD: "2a[r{T+ewq"
     ports:
       - "3306:3306"
     volumes:
