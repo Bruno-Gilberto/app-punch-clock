@@ -13,7 +13,17 @@ class Dashboard extends Controller
 {
     public function show()
     {
-        return Inertia::render('User/Dashboard');
+
+        $user = Auth::guard('user')->user();
+        $lastLog = $user->punchLogs()->latest()->first();
+        $currentType = $lastLog ? $lastLog->type : null;
+
+        // Lógica Inteligente: Alterna entre IN e OUT
+        $nextType = $currentType === 'in' ? 'out' : 'in';
+
+        return Inertia::render('User/Dashboard',[
+            'nextType' => $nextType
+        ]);
     }
 
     public function profile(Request $request)
@@ -78,7 +88,7 @@ class Dashboard extends Controller
         if (!Hash::check($validated['current_password'], $user->password)) return redirect()->back()->withErrors(['current_password' => 'A senha atual está incorreta.']);
 
         $user->update([
-            'password' =>bcrypt($validated['new_password']),
+            'password' => Hash::make($validated['new_password']),
         ]);
 
         return redirect()->back()->with('success', 'Senha alterada com sucesso.');
