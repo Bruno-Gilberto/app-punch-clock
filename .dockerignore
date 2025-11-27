@@ -1,0 +1,54 @@
+# Dependências
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de desenvolvimento
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation (keep organized in ./docs/)
+*.md
+!docs/
+docs/*-temp.md
+docs/draft-*.md
+
+# Arquivos temporários
+.tmp
+.temp
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Documentação
+*.md
+!README.md
+
+# Arquivos Git
+.git
+.gitignore
+
+# Dockerfile e docker-compose
+Dockerfile*
+docker-compose*.yml
+
+# Testes
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Coverage
+coverage/
+.nyc_output/

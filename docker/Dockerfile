@@ -22,7 +22,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libcurl4-openssl-dev \
     pkg-config \
-    libssl-dev
+    libssl-dev \
+    nodejs \
+    npm
 
 #Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -42,14 +44,22 @@ COPY --chown=www-data:www-data . /var/www/html
 #Change current user to www-data
 USER www-data
 
-#Copy entrypoint script
-#COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-#Give execution rights on the entrypoint script
-#RUN chmod +x /usr/local/bin/entrypoint.sh
+#Change back to root for file operations
+USER root
 
-#Define the entrypoint image
-#ENTRYPOINT ["entrypoint.sh"]
+#Install Node dependencies and build frontend
+RUN npm ci && npm run build
+
+#Set proper permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+#Change back to www-data
+USER www-data
 
 #Expose port 8000
 EXPOSE 8000
