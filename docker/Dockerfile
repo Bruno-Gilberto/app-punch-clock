@@ -1,67 +1,44 @@
-#Define the base image
-FROM php:8.3-fpm
+# --- Stage 1: Build de Assets ---
+# FROM node:20-alpine AS node_build
 
-#Set working directory
+# RUN mkdir -p /app/public
+
+# Copia tudo que o Vite precisa
+# COPY package*.json vite.config.js tailwind.config.js /app/
+# COPY resources/ /app/resources/
+
+# WORKDIR /app
+
+# RUN npm ci --force && npm run build
+
+# --- Stage 2: PHP Laravel ---
+FROM php:8.3-fpm AS app
+
 WORKDIR /var/www/html
 
-#Install dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    libxml2-dev \
     libzip-dev \
-    libcurl4-openssl-dev \
-    pkg-config \
-    libssl-dev \
-    nodejs \
-    npm
+    unzip \
+    && docker-php-ext-install zip pdo_mysql
 
-#Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
-#Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
-
-#Install Composer
+# Instalar composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-#Copy existing application directory contents
-COPY . /var/www/html
+# Copiar projeto inteiro ANTES de rodar composer
+COPY . .
 
-#Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/html
-
-#Change current user to www-data
-USER www-data
-
-#Install PHP dependencies
+# Rodar composer com o código presente
 RUN composer install --no-dev --optimize-autoloader
 
-#Change back to root for file operations
-USER root
+# Permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-#Install Node dependencies and build frontend
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
-#Set proper permissions
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-#Change back to www-data
-USER www-data
-
-#Expose port 8000
 EXPOSE 8000
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

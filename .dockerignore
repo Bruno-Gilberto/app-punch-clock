@@ -1,4 +1,4 @@
-# Dependências
+# Node modules (will be reinstalled in Docker)
 node_modules
 npm-debug.log*
 yarn-debug.log*
@@ -9,12 +9,6 @@ yarn-error.log*
 .env.development
 .env.test
 .env.production
-
-# Documentation (keep organized in ./docs/)
-*.md
-!docs/
-docs/*-temp.md
-docs/draft-*.md
 
 # Arquivos temporários
 .tmp
@@ -30,17 +24,10 @@ docs/draft-*.md
 .DS_Store
 Thumbs.db
 
-# Documentação
-*.md
-!README.md
-
 # Arquivos Git
 .git
 .gitignore
-
-# Dockerfile e docker-compose
-Dockerfile*
-docker-compose*.yml
+.gitattributes
 
 # Testes
 test/
@@ -52,3 +39,39 @@ __tests__/
 # Coverage
 coverage/
 .nyc_output/
+
+# Laravel cache/logs
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+bootstrap/cache/*
+
+# Composer vendor (will be reinstalled in Docker)
+vendor
+
+# Cache do PHP
+.php_cs.cache
+
+# arquivos de configuração de IDE
+.editorconfig
+.eslintrc.json
+.prettierrc
+.stylelintrc
+
+# Arquivos de build locais (não incluir, será feito no Docker)
+public/build
+
+# Docker files (não precisa copiar)
+Dockerfile
+docker-compose.yml
+docker/
+
+# Documentação e exemplos
+README.md
+CHANGELOG.md
+*.md
+docs/
+
+# Variáveis de ambiente
+.env
+.env.example
